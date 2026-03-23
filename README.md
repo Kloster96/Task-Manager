@@ -1,8 +1,8 @@
 <div align="center">
 
-# 📋 Gestor de Tareas
+# 📋 Task Manager
 
-**Aplicación full-stack para gestión y seguimiento de tareas con roles, dashboards en tiempo real y reportes exportables.**
+**Full-stack task management and tracking application with role-based access, real-time dashboards, and exportable reports.**
 
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=flat-square&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white)
@@ -13,42 +13,42 @@
 
 ---
 
-### 🌐 Deploy en Producción
+### 🌐 Live Deployment
 
-| Servicio | Stack | URL |
-|----------|-------|-----|
-| **Frontend** | React + Vite | [Ver app →](https://frontend-gestorde-tareas-mrgc9wnos-kloster96s-projects.vercel.app/) |
+| Service | Stack | URL |
+|---------|-------|-----|
+| **Frontend** | React + Vite | [View app →](https://frontend-gestorde-tareas-mrgc9wnos-kloster96s-projects.vercel.app/) |
 | **Backend** | Node + Express | [API →](https://backend-gestordetareas.onrender.com) |
-| **Base de datos** | MongoDB Atlas | Cloud-hosted |
+| **Database** | MongoDB Atlas | Cloud-hosted |
 
-> ⏱ El backend usa plan gratuito en Render — la primera request puede tardar ~15s (cold start).
+> ⏱ Backend uses Render's free tier — first request may take ~15s (cold start).
 
 </div>
 
 ---
 
-## 🎯 Qué resuelve
+## 🎯 Problem Statement
 
-Equipos que necesitan organizar trabajo colaborativo sin depender de herramientas enterprise caras. Un admin crea y asigna tareas; los miembros las ejecutan, actualizan checklist y adjuntan evidencia. Todo queda trackeado con dashboards y exportable a Excel.
+Teams that need to organize collaborative work without relying on expensive enterprise tools. An admin creates and assigns tasks; members execute them, update checklists, and attach evidence. Everything is tracked with dashboards and exportable to Excel.
 
 ---
 
-## 🏗 Arquitectura
+## 🏗 Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
 │                   FRONTEND                       │
 │  React 19 + Vite + TailwindCSS 4                │
 │  React Router v7 · Axios · Recharts             │
-│  Context API para estado de autenticación       │
+│  Context API for auth state management          │
 ├─────────────────────────────────────────────────┤
 │                    REST API                       │
 │  Express 5 · JWT · Multer · ExcelJS             │
-│  RBAC (admin / member) · Middlewares de auth    │
+│  RBAC (admin / member) · Auth middlewares       │
 ├─────────────────────────────────────────────────┤
 │                   DATABASE                        │
 │  MongoDB Atlas · Mongoose ODM                    │
-│  Aggregation pipelines para estadísticas        │
+│  Aggregation pipelines for analytics            │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -56,60 +56,60 @@ Equipos que necesitan organizar trabajo colaborativo sin depender de herramienta
 
 ## ✨ Features
 
-### Autenticación y Autorización
-- 🔐 Registro con avatar y token opcional de admin
-- 🛡 JWT con refresh automático via interceptor de Axios
-- 👥 Dos roles: **Admin** (CRUD completo) y **Member** (solo sus tareas)
+### Authentication & Authorization
+- 🔐 Registration with avatar and optional admin token
+- 🛡 JWT with automatic refresh via Axios interceptor
+- 👥 Two roles: **Admin** (full CRUD) and **Member** (assigned tasks only)
 
-### Gestión de Tareas
-- 📝 CRUD con título, descripción, prioridad y fecha límite
-- 👤 Asignación múltiple de miembros por tarea
-- ✅ Checklist interactivo con progreso auto-calculado
-- 📎 Adjuntos (URLs) con previsualización
-- 🔄 Transición automática de estado según progreso (Pending → In Progress → Completed)
+### Task Management
+- 📝 CRUD with title, description, priority, and due date
+- 👤 Multi-member assignment per task
+- ✅ Interactive checklist with auto-calculated progress
+- 📎 URL-based attachments with preview
+- 🔄 Automatic status transitions based on progress (Pending → In Progress → Completed)
 
-### Dashboard y Reportes
-- 📊 Gráficos de distribución por estado (Pie) y prioridad (Bar) con Recharts
-- 📈 Cards de métricas en tiempo real
-- 📁 Exportación a Excel (.xlsx) de tareas y usuarios con ExcelJS
-- 🔍 Filtrado por estado con tabs
+### Dashboard & Reports
+- 📊 Distribution charts by status (Pie) and priority (Bar) using Recharts
+- 📈 Real-time metric cards
+- 📁 Excel (.xlsx) export for tasks and users via ExcelJS
+- 🔍 Status-based filtering with tabs
 
 ### UI/UX
-- 📱 Diseño responsive (mobile-first con menú hamburguesa)
-- 🇪🇸 Interfaz en español con fechas localizadas (Day.js)
-- 🔔 Toast notifications para feedback inmediato
-- 🖼 Avatares agrupados en cards de tarea
+- 📱 Responsive design (mobile-first with hamburger menu)
+- 🇪🇸 Spanish-localized interface with Day.js date formatting
+- 🔔 Toast notifications for immediate feedback
+- 🖼 Grouped avatars on task cards
 
 ---
 
-## 🛠 Stack técnico
+## 🛠 Tech Stack
 
-| Capa | Tecnología | Detalle |
-|------|-----------|---------|
-| **Frontend** | React 19 + Vite 6 | SPA con hot reload |
-| **Estilos** | TailwindCSS 4 | Utility-first, responsive |
-| **Routing** | React Router v7 | Rutas protegidas por rol |
-| **HTTP** | Axios | Instancia centralizada con interceptor JWT |
-| **Gráficos** | Recharts | Pie + Bar charts customizados |
+| Layer | Technology | Detail |
+|-------|-----------|--------|
+| **Frontend** | React 19 + Vite 6 | SPA with hot reload |
+| **Styling** | TailwindCSS 4 | Utility-first, responsive |
+| **Routing** | React Router v7 | Role-protected routes |
+| **HTTP** | Axios | Centralized instance with JWT interceptor |
+| **Charts** | Recharts | Custom Pie + Bar charts |
 | **Backend** | Express 5 | REST API |
-| **Base de datos** | MongoDB Atlas | Mongoose ODM |
+| **Database** | MongoDB Atlas | Mongoose ODM |
 | **Auth** | bcryptjs + JWT | Hash + token-based |
-| **Uploads** | Multer | Imágenes en disco |
-| **Reportes** | ExcelJS | Streaming de .xlsx |
-| **Deploy** | Vercel + Render + Atlas | CI/CD automático |
+| **Uploads** | Multer | Disk-stored images |
+| **Reports** | ExcelJS | Streaming .xlsx generation |
+| **Deploy** | Vercel + Render + Atlas | Automatic CI/CD |
 
 ---
 
-## 📂 Estructura del proyecto
+## 📂 Project Structure
 
 ```
 ├── backend/
-│   ├── config/          # Conexión a MongoDB
-│   ├── controllers/     # Lógica de negocio (auth, tasks, users, reports)
+│   ├── config/          # MongoDB connection
+│   ├── controllers/     # Business logic (auth, tasks, users, reports)
 │   ├── middlewares/     # Auth (protect, adminOnly), upload (multer)
 │   ├── models/          # Mongoose schemas (User, Task)
-│   ├── routes/          # Rutas REST por dominio
-│   ├── uploads/         # Archivos subidos
+│   ├── routes/          # REST routes by domain
+│   ├── uploads/         # Uploaded files
 │   └── server.js        # Entry point
 │
 ├── frontend/
@@ -130,38 +130,38 @@ Equipos que necesitan organizar trabajo colaborativo sin depender de herramienta
 ## 🔌 API Endpoints
 
 ### Auth `/api/auth`
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| `POST` | `/register` | — | Registro (con token admin opcional) |
-| `POST` | `/login` | — | Login, devuelve JWT |
-| `GET` | `/profile` | ✅ | Perfil del usuario actual |
-| `PUT` | `/profile` | ✅ | Actualizar perfil |
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `POST` | `/register` | — | Register (with optional admin token) |
+| `POST` | `/login` | — | Login, returns JWT |
+| `GET` | `/profile` | ✅ | Current user profile |
+| `PUT` | `/profile` | ✅ | Update profile |
 
 ### Tasks `/api/tasks`
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| `GET` | `/dashboard-data` | ✅ Admin | Stats globales + gráficos |
-| `GET` | `/user-dashboard-data` | ✅ | Stats personales |
-| `GET` | `/` | ✅ | Listar tareas (filtrado por rol) |
-| `GET` | `/:id` | ✅ | Detalle de tarea |
-| `POST` | `/` | ✅ Admin | Crear tarea |
-| `PUT` | `/:id` | ✅ | Actualizar tarea |
-| `DELETE` | `/:id` | ✅ Admin | Eliminar tarea |
-| `PUT` | `/:id/status` | ✅ | Cambiar estado |
-| `PUT` | `/:id/todo` | ✅ | Actualizar checklist |
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `GET` | `/dashboard-data` | ✅ Admin | Global stats + charts |
+| `GET` | `/user-dashboard-data` | ✅ | Personal stats |
+| `GET` | `/` | ✅ | List tasks (filtered by role) |
+| `GET` | `/:id` | ✅ | Task detail |
+| `POST` | `/` | ✅ Admin | Create task |
+| `PUT` | `/:id` | ✅ | Update task |
+| `DELETE` | `/:id` | ✅ Admin | Delete task |
+| `PUT` | `/:id/status` | ✅ | Change status |
+| `PUT` | `/:id/todo` | ✅ | Update checklist |
 
 ### Reports `/api/reports`
-| Método | Ruta | Auth | Descripción |
-|--------|------|------|-------------|
-| `GET` | `/export/tasks` | ✅ Admin | Descargar tareas (.xlsx) |
-| `GET` | `/export/users` | ✅ Admin | Descargar usuarios (.xlsx) |
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `GET` | `/export/tasks` | ✅ Admin | Download tasks (.xlsx) |
+| `GET` | `/export/users` | ✅ Admin | Download users (.xlsx) |
 
 ---
 
-## ⚡ Instalación local
+## ⚡ Local Setup
 
 ```bash
-# Clonar repositorio
+# Clone repository
 git clone https://github.com/Kloster96/Proyecto_programacion_3.git
 cd Proyecto_programacion_3
 ```
@@ -171,10 +171,10 @@ cd Proyecto_programacion_3
 cd backend
 npm install
 
-# Crear archivo .env
+# Create .env file
 cat > .env << EOF
 MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/gestor-tareas
-JWT_SECRET=tu_secreto_jwt
+JWT_SECRET=your_jwt_secret
 PORT=5000
 ADMIN_INVITE_TOKEN=4588944
 CLIENT_URL=http://localhost:5173
@@ -190,11 +190,11 @@ npm install
 npm run dev
 ```
 
-> La app corre en `http://localhost:5173` (frontend) y `http://localhost:5000` (backend).
+> App runs at `http://localhost:5173` (frontend) and `http://localhost:5000` (backend).
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Author
 
 **Luciano Kloster**
 
@@ -202,11 +202,11 @@ npm run dev
 
 ---
 
-## 📝 Lo que aprendí construyendo esto
+## 📝 What I Learned
 
-- Diseño de una REST API con control de acceso basado en roles (RBAC)
-- Manejo de uploads de archivos con Multer y servido estático
-- Aggregation pipelines de MongoDB para dashboards en tiempo real
-- Interceptores de Axios para auth automática y manejo de errores centralizado
-- Deploy full-stack en servicios gratuitos (Vercel + Render + Atlas)
-- Generación de reportes en Excel con streaming desde el backend
+- Designing a REST API with role-based access control (RBAC)
+- File upload handling with Multer and static serving
+- MongoDB aggregation pipelines for real-time dashboards
+- Axios interceptors for automatic auth and centralized error handling
+- Full-stack deployment on free-tier services (Vercel + Render + Atlas)
+- Excel report generation with backend streaming
