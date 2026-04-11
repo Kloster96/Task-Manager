@@ -1,35 +1,22 @@
 const multer = require("multer");
 const path = require("path");
 
-// Configuración del almacenamiento
+// Simple storage without fileFilter to avoid "Unexpected field" errors
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log("Multer: destination called, file:", file);
+    console.log("Multer: destination, file:", file.fieldname);
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    console.log("Multer: filename called, file:", file);
+    console.log("Multer: filename, file:", file.originalname);
     cb(null, Date.now() + "-" + file.originalname);
   }
 });
 
-// Filtro opcional de archivos
-const fileFilter = (req, file, cb) => {
-  console.log("Multer: fileFilter called, file:", file);
-  const allowedTypes = /jpeg|jpg|png/;
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (allowedTypes.test(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Solo se permiten imágenes JPEG y PNG"));
-  }
-};
-
-// For multer 1.4.5-lts.1, use { dest: 'uploads/' } or storage
+// Just use diskStorage with no fileFilter - accept everything
 const upload = multer({ 
   storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
 module.exports = upload;
