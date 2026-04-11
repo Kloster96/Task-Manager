@@ -3,7 +3,7 @@ import axiosInstance from "./axiosInstance";
 
 const updloadImage = async (imageFile) => {
   const formData = new FormData();
-  formData.append("file", imageFile);
+  formData.append("image", imageFile);
 
   try {
     const response = await axiosInstance.post(API_PATHS.IMAGE.UPLOAD_IMAGE, formData);
