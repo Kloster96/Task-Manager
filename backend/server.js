@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const multer = require("multer");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
@@ -38,4 +39,16 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`localhost:${PORT}`);
+});
+
+// Global error handler for multer
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        console.error("Multer error:", err.message);
+        return res.status(400).json({ message: "Error de upload: " + err.message });
+    } else if (err) {
+        console.error("Upload error:", err.message);
+        return res.status(400).json({ message: err.message });
+    }
+    next();
 });
