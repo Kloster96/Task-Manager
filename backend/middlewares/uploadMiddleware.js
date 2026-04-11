@@ -25,10 +25,11 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// For multer 1.4.5-lts.1, use { dest: 'uploads/' } or storage
 const upload = multer({ 
-  storage, 
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 module.exports = upload;

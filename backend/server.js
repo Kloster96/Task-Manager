@@ -26,6 +26,9 @@ connectDB();
 // Middleware 
 app.use(express.json());
 
+// Add multipart parser BEFORE routes but AFTER static
+// This ensures multer can handle multipart before it hits the routes
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
