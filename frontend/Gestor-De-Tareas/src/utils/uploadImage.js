@@ -6,11 +6,7 @@ const updloadImage = async (imageFile) => {
   formData.append("file", imageFile);
 
   try {
-    const response = await axiosInstance.post(API_PATHS.IMAGE.UPLOAD_IMAGE, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }
-    });
+    const response = await axiosInstance.post(API_PATHS.IMAGE.UPLOAD_IMAGE, formData);
     return response.data;
   } catch (error) {
     console.error("Error al subir la imagen:", error);
