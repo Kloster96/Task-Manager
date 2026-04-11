@@ -11,7 +11,7 @@ router.post("/login", loginUser);
 router.get("/profile", protect, getUserProfile);
 router.put("/profile", protect, updateUserProfile);
 
-router.post("/upload-image", upload.single("image"), (req, res) => {
+router.post("/upload-image", upload.single("file"), (req, res) => {
     console.log("Upload endpoint called, file:", req.file);
     console.log("Body:", req.body);
     if (!req.file) {
