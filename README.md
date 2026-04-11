@@ -13,15 +13,23 @@
 
 ---
 
-### 🌐 Live Deployment
+## 🚀 Demo
 
-| Service | Stack | URL |
-|---------|-------|-----|
-| **Frontend** | React + Vite | [View app →](https://frontend-gestorde-tareas-mrgc9wnos-kloster96s-projects.vercel.app/) |
-| **Backend** | Node + Express | [API →](https://backend-gestordetareas.onrender.com) |
-| **Database** | MongoDB Atlas | Cloud-hosted |
+Probá la app right ahora — sin instalar nada:
 
-> ⏱ Backend uses Render's free tier — first request may take ~15s (cold start).
+| | URL |
+|--|-----|
+| **Frontend** | https://task-manager-86asjpjj5-kloster96s-projects.vercel.app |
+| **Backend** | https://task-manager-11hj.onrender.com |
+
+> ⚠️ El backend en Render usa el tier gratuito — la primera request puede tardar ~15s (cold start).
+
+### Credenciales de prueba
+
+- **Admin**: Pedile el token de invitación al admin (`ADMIN_INVITE_TOKEN: 4588944`) o
+- **Miembro**: Registrate normalmente sin token
+
+---
 
 </div>
 
@@ -162,8 +170,8 @@ Teams that need to organize collaborative work without relying on expensive ente
 
 ```bash
 # Clone repository
-git clone https://github.com/Kloster96/Proyecto_programacion_3.git
-cd Proyecto_programacion_3
+git clone https://github.com/Kloster96/Task-Manager.git
+cd Task-Manager
 ```
 
 ### Backend
