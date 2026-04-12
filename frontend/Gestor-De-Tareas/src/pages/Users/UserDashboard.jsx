@@ -135,11 +135,29 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
             </div>
           </div>
 
-          <div>
+<div>
             <div className="card">
               <div className="flex items-center justify-between">
                 <h5 className="font-medium">nivel de prioridad de las tareas</h5>
               </div>
+              <CustomBarChart
+                data={barChartData}
+                colors={COLORS}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="card">
+              <div className="flex items-center justify-between">
+                <h5 className="font-medium">Estado de tareas</h5>
+              </div>
+              <CustomPieChart
+                data={pieChartData}
+                colors={COLORS}
+              />
+            </div>
+          </div>
               <CustomBarChart
                 data={barChartData}
               />
