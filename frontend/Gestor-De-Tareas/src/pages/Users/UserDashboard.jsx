@@ -121,31 +121,7 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
           </div>
         </div>
 
-        <div className="grid  grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
-
-          <div>
-            <div className="card">
-              <div className="flex items-center justify-between">
-                <h5 className="font-medium">Distribucion de tareas</h5>
-              </div>
-              <CustomPieChart
-                data={pieChartData}
-                colors={COLORS}
-              />
-            </div>
-          </div>
-
-<div>
-            <div className="card">
-              <div className="flex items-center justify-between">
-                <h5 className="font-medium">nivel de prioridad de las tareas</h5>
-              </div>
-              <CustomBarChart
-                data={barChartData}
-                colors={COLORS}
-              />
-            </div>
-          </div>
+<div className="grid  grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
 
           <div>
             <div className="card">
@@ -158,19 +134,14 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
               />
             </div>
           </div>
-              <CustomBarChart
-                data={barChartData}
-              />
-            </div>
-          </div>
 
           <div>
             <div className="card">
               <div className="flex items-center justify-between">
-                <h5 className="font-medium">Distribucion de tareas</h5>
+                <h5 className="font-medium">Nivel de prioridad</h5>
               </div>
-              <CustomPieChart
-                data={pieChartData}
+              <CustomBarChart
+                data={barChartData}
                 colors={COLORS}
               />
             </div>
@@ -186,7 +157,7 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
                  </button>
               </div>
 
-              <TaskListTable tableData={dashboardData?.recentTasks || []} />
+<TaskListTable tableData={dashboardData?.recentTasks || []} />
             </div>
           </div>
         </div>
