@@ -29,7 +29,7 @@ const SideMenu = ({ activeMenu }) => {
 
         }
     }, [user]);
-    return <div className="w-64 h-[calc(100vh-60px)] bg-white border-r border-gray-200/50 sticky top-[60px] z-20">
+return <div className="w-64 h-[calc(100vh-60px)] bg-white border-r border-gray-200/50 sticky top-[60px] z-20 dark:bg-gray-900 dark:border-gray-700">
         <div className="flex flex-col items-center justify-center mb-7 pt-5">
             <div className="relative">
                 <img 
@@ -44,11 +44,11 @@ const SideMenu = ({ activeMenu }) => {
                 </div>
             )}
 
-            <h5 className="text-gray-950 font-medium leading-6 mt-3">
+            <h5 className="text-gray-950 font-medium leading-6 mt-3 dark:text-white">
                 {user?.name || ""}
             </h5>
 
-            <p className="text-[12px] text-gray-500">{user?.email || ""}</p>
+            <p className="text-[12px] text-gray-500 dark:text-gray-400">{user?.email || ""}</p>
         </div>
 
         {sideMenuData.map((item, index) => (
@@ -57,8 +57,8 @@ const SideMenu = ({ activeMenu }) => {
                 className={`w-full flex items-center gap-4 text-[15px] ${
                     activeMenu == item.label 
                     ? "text-primary bg-linear-to-r from-blue-50/40 to-blue-100/50 border-r-3"
-                 : ""
-                } py-3 px-6 mb-3 cursor-pointer`}
+                    : "dark:text-gray-300"
+                 } py-3 px-6 mb-3 cursor-pointer`}
                 onClick={() => handleClick(item.path)}
             >
                 <item.icon className="text-xl"/>

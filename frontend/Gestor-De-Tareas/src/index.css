@@ -24,10 +24,19 @@
     body {
         background-color: #fff;
         overflow-x: hidden;
+        color: #1a1a1a;
     }
-    .dark body {
-        background-color: #1a1a1a;
+    .dark body, .dark {
+        background-color: #111827;
+        color: #f3f4f6;
     }
+    /* Default text colors for dark mode */
+    .dark .text-gray-500 { color: #9ca3af; }
+    .dark .text-gray-600 { color: #9ca3af; }
+    .dark .text-gray-700 { color: #d1d5db; }
+    .dark .text-gray-800 { color: #e5e7eb; }
+    .dark .text-gray-900 { color: #f3f4f6; }
+    .dark .text-gray-950 { color: #f9fafb; }
 }
 
 .input-box {
