@@ -43,14 +43,14 @@ const TaskCard = ({
 
   return (
     <div
-      className="bg-white rounded-xl py-4 shadow-lg border border-gray-300 hover:shadow-xl transition cursor-pointer"
+      className="bg-white dark:bg-gray-800 rounded-xl py-4 shadow-lg border border-gray-300 dark:border-gray-700 hover:shadow-xl transition cursor-pointer"
       onClick={onClick}
     >
       <div className="flex items-end gap-3 px-4">
-        <div className={`text-[12px] font-medium ${getStatusTagColor()} px-4 py-1 rounded`}>
+        <div className={`text-[12px] font-medium ${getStatusTagColor()} dark:${getStatusTagColor().replace('bg-', 'dark:bg-').replace('/10', '/20')} px-4 py-1 rounded`}>
           {status}
         </div>
-        <div className={`text-[12px] font-medium ${getPriorityTagColor()} px-4 py-1 rounded`}>
+        <div className={`text-[12px] font-medium ${getPriorityTagColor()} dark:${getPriorityTagColor().replace('bg-', 'dark:bg-').replace('/10', '/20')} px-4 py-1 rounded`}>
           {priority} Prioridad
         </div>
       </div>
@@ -64,11 +64,11 @@ const TaskCard = ({
             : 'border-violet-500'
         }`}
       >
-        <p className="text-sm font-medium text-gray-800 mt-2 line-clamp-2">{title}</p>
-        <p className="text-xs text-gray-500 mt-2 line-clamp-2 leading-[18px]">{description}</p>
-        <p className="text-[13px] text-gray-700/80 font-medium mt-2 mb-2 leading-[18px]">
+        <p className="text-sm font-medium text-gray-800 dark:text-white mt-2 line-clamp-2">{title}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 line-clamp-2 leading-[18px]">{description}</p>
+        <p className="text-[13px] text-gray-700/80 dark:text-gray-300 font-medium mt-2 mb-2 leading-[18px]">
           Tarea realizada:{' '}
-          <span className="font-semibold text-gray-700">
+          <span className="font-semibold text-gray-700 dark:text-gray-200">
             {completedTodoCount} / {todoChecklist.length || 0}
           </span>
         </p>
@@ -79,15 +79,15 @@ const TaskCard = ({
       <div className="px-4 mt-4">
         <div className="flex items-center justify-between">
           <div>
-            <label className="text-xs text-gray-500">Fecha de inicio</label>
-            <p className="text-[13px] font-medium text-gray-900">
+            <label className="text-xs text-gray-500 dark:text-gray-400">Fecha de inicio</label>
+            <p className="text-[13px] font-medium text-gray-900 dark:text-white">
               {dayjs(createdAt).format('dddd D MMMM YYYY')}
             </p>
           </div>
 
           <div>
-            <label className="text-xs text-gray-500">Fecha de vencimiento</label>
-            <p className="text-[13px] font-medium text-gray-900">
+            <label className="text-xs text-gray-500 dark:text-gray-400">Fecha de vencimiento</label>
+            <p className="text-[13px] font-medium text-gray-900 dark:text-white">
               {dayjs(dueDate).format('dddd D MMMM YYYY')}
             </p>
           </div>
@@ -96,9 +96,9 @@ const TaskCard = ({
         <div className="flex items-center justify-between mt-3">
           <AvatarGroup avatars={assignedTo || []} />
           {attachmentCount > 0 && (
-            <div className="flex items-center gap-2 bg-blue-100 px-3 py-2 rounded-lg shrink-0">
-              <LuPaperclip className="text-blue-600 text-lg" />
-              <span className="text-xs text-gray-900">{attachmentCount}</span>
+            <div className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-3 py-2 rounded-lg shrink-0">
+              <LuPaperclip className="text-blue-600 dark:text-blue-400 text-lg" />
+              <span className="text-xs text-gray-900 dark:text-white">{attachmentCount}</span>
             </div>
           )}
         </div>
