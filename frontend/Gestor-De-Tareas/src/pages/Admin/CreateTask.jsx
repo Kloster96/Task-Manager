@@ -190,7 +190,7 @@ const CreateTask = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 mt-4">
               <div className="col-span-3 form-card">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl md:text-xl font-medium">
+                  <h2 className="text-xl md:text-xl font-medium text-gray-900 dark:text-white">
                     {taskId ? 'Actualizar tarea' : 'Crear tarea'}
                   </h2>
                   {taskId && (
@@ -204,7 +204,7 @@ const CreateTask = () => {
                 </div>
 
                 <div className="mt-4">
-                  <label className="text-xs font-medium text-slate-600">
+                  <label className="text-xs font-medium text-slate-600 dark:text-gray-300 dark:text-gray-300">
                     Titulo de la tarea
                   </label>
                   <input
@@ -219,7 +219,7 @@ const CreateTask = () => {
                 </div>
 
                 <div className="mt-3">
-                  <label className="text-xs font-medium text-slate-700">
+                  <label className="text-xs font-medium text-slate-700 dark:text-gray-300 dark:text-gray-300">
                     Descripcion
                   </label>
                   <textarea
@@ -235,7 +235,7 @@ const CreateTask = () => {
 
                 <div className="grid grid-cols-12 gap-4 mt-4">
                   <div className="col-span-6 md:col-span-4">
-                    <label className="text-xs font-medium text-slate-600">
+                    <label className="text-xs font-medium text-slate-600 dark:text-gray-300">
                       Prioridad
                     </label>
 
@@ -248,7 +248,7 @@ const CreateTask = () => {
                   </div>
 
                   <div className="col-span-6 md:col-span-4">
-                    <label className="text-xs font-medium text-slate-700">
+                    <label className="text-xs font-medium text-slate-700 dark:text-gray-300">
                       Fecha limite
                     </label>
                     <input
@@ -263,7 +263,7 @@ const CreateTask = () => {
                   </div>
 
                   <div className="col-span-12 md:col-span-4 flex flex-col items-center justify-center">
-                    <label className="text-xs font-medium text-slate-600 mb-1">
+                    <label className="text-xs font-medium text-slate-600 dark:text-gray-300 mb-1">
                       Asignar a
                     </label>
                     <SelectUser
@@ -275,7 +275,7 @@ const CreateTask = () => {
                   </div>
 
                   <div className="col-span-12 mt-3">
-                    <label className="text-xs font-medium text-slate-600">
+                    <label className="text-xs font-medium text-slate-600 dark:text-gray-300">
                       Lista de control
                     </label>
                     <TodoListInput
@@ -285,7 +285,7 @@ const CreateTask = () => {
                   </div>
 
                     <div className="col-span-12 mt-3">
-                      <label className="text-xs font-medium text-slate-600">
+                      <label className="text-xs font-medium text-slate-600 dark:text-gray-300">
                           Añadir archivo
                       </label>
                       <AddAttchmentsInput

@@ -77,7 +77,7 @@ const MyTasks = () => {
     <DashboardLayout activeMenu="Mi Tarea">
       <div className="my-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-          <h2 className="text-xl md:text-xl font-medium">Mis Tareas</h2>
+          <h2 className="text-xl md:text-xl font-medium text-gray-900 dark:text-white">Mis Tareas</h2>
           {tabs?.[0]?.count > 0 && (
               <TaskStatusTabs
                 tabs={tabs}
