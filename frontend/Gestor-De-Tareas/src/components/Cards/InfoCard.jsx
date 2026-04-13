@@ -8,10 +8,10 @@ const InfoCard = ({ icon, label, value, color }) => {
 
       {/* Texto con número y etiqueta */}
       <div className="flex flex-col justify-center">
-        <span className="text-sm md:text-[15px] text-black font-semibold">
+        <span className="text-sm md:text-[15px] text-gray-900 dark:text-white font-bold">
           {value}
         </span>
-        <span className="text-xs md:text-[14px] text-gray-500">
+        <span className="text-xs md:text-[14px] text-gray-500 dark:text-gray-400">
           {label}
         </span>
       </div>

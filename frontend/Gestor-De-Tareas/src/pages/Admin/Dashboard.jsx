@@ -150,7 +150,7 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
           <div className="md:col-span-2">
             <div className="card">
               <div className="flex items-center justify-between">
-                 <h5 className="text-lg">Tareas recientes</h5>
+                 <h5 className="text-lg font-semibold text-gray-900 dark:text-white">Tareas recientes</h5>
 
                  <button className="card-btn" onClick={onSeeMore}>
                   Ver todo <LuArrowRight className="text-base"/>

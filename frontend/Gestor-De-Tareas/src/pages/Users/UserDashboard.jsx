@@ -147,17 +147,17 @@ const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"]
             </div>
           </div>
 
-          <div className="md:col-span-2">
+<div className="md:col-span-2">
             <div className="card">
               <div className="flex items-center justify-between">
-                 <h5 className="text-lg">Tareas recientes</h5>
+                 <h5 className="text-lg font-semibold text-gray-900 dark:text-white">Tareas recientes</h5>
 
                  <button className="card-btn" onClick={onSeeMore}>
                   Ver todo <LuArrowRight className="text-base"/>
                  </button>
               </div>
 
-<TaskListTable tableData={dashboardData?.recentTasks || []} />
+              <TaskListTable tableData={dashboardData?.recentTasks || []} />
             </div>
           </div>
         </div>
