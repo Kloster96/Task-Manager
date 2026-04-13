@@ -8,7 +8,7 @@ const DashboardLayout = ({children, activeMenu}) => {
 
   return (
     <div className="">
-        <Navbar activeMenu={activeMenu} />
+        <Navbar />
 
         {user && (
             <div className="flex">
