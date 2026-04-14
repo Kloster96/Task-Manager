@@ -49,4 +49,10 @@ export const API_PATHS = {
   PDF: {
     EXPORT_TASKS: "/api/pdf/export-tasks-pdf",
   },
+
+  TEMPLATES: {
+    GET_ALL: "/api/templates",
+    CREATE: "/api/templates",
+    DELETE: (id) => `/api/templates/${id}`,
+  },
 };

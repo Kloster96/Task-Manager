@@ -4,6 +4,7 @@ import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
 import ProfilePage from "./pages/Users/ProfilePage";
 import KanbanBoard from "./pages/Admin/KanbanBoard";
+import CalendarView from "./pages/Admin/CalendarView";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Admin/Dashboard";
 import ManageTasks from "./pages/Admin/ManageTasks";
@@ -30,6 +31,7 @@ const AppContent = () => {
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/tasks" element={<ManageTasks />} />
             <Route path="/admin/kanban" element={<KanbanBoard />} />
+            <Route path="/admin/calendar" element={<CalendarView />} />
             <Route path="/admin/create-task" element={<CreateTask />} />
             <Route path="/admin/users" element={<ManageUsers />} />
           </Route>

@@ -5,7 +5,8 @@ import {
     LuSquarePlus,
     LuLogOut,
     LuUser,
-    LuKanban
+    LuKanban,
+    LuCalendar
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -26,6 +27,12 @@ export const SIDE_MENU_DATA = [
         label: "Kanban",
         icon: LuKanban,
         path: "/admin/kanban"
+    },
+    {
+        id: "02c",
+        label: "Calendario",
+        icon: LuCalendar,
+        path: "/admin/calendar"
     },
     {
         id: "03",

@@ -12,6 +12,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const activityRoutes = require("./routes/activityRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const pdfRoutes = require("./routes/pdfRoutes");
+const templateRoutes = require("./routes/templateRoutes");
 const app = express();
 
 app.use(
@@ -37,6 +38,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/pdf", pdfRoutes);
+app.use("/api/templates", templateRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
-import { LuTrash2 } from 'react-icons/lu'
+import { LuTrash2, LuX, LuFileStack } from 'react-icons/lu'
 import SelectDropdown from '../../components/Inputs/SelectDropdown'
 import SelectUser from '../../components/Inputs/SelectUser'
 import TodoListInput from '../../components/Inputs/TodoListInput'
@@ -18,7 +18,7 @@ import DeleteAlert from '../../components/layouts/DeleteAlert'
 
 const CreateTask = () => {
   const location = useLocation()
-  const { taskId } = location.state || {}
+  const { taskId, template } = location.state || {}
   const navigate = useNavigate()
 
   const [taskData, setTaskData] = useState({
@@ -28,13 +28,45 @@ const CreateTask = () => {
     dueDate: null,
     assignedTo: [],
     todoChecklist: [],
-    attachments: []
+    attachments: [],
+    tags: []
   })
 
   const [currentTask, setCurrentTask] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
+  const [templates, setTemplates] = useState([])
+
+  // Cargar plantillas
+  const fetchTemplates = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.TEMPLATES.GET_ALL)
+      setTemplates(response.data || [])
+    } catch (error) {
+      console.error('Error fetching templates:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchTemplates()
+  }, [])
+
+  // Aplicar plantilla
+  const applyTemplate = (templateId) => {
+    const template = templates.find(t => t._id === templateId)
+    if (template) {
+      setTaskData(prev => ({
+        ...prev,
+        title: template.name,
+        description: template.description || '',
+        priority: template.priority || 'Medium',
+        todoChecklist: template.todoChecklist?.map(t => t.text) || [],
+        tags: template.tags || []
+      }))
+      toast.success('Plantilla aplicada')
+    }
+  }
 
   const handleValueChange = (key, value) => {
     setTaskData((prevData) => ({ ...prevData, [key]: value }))
@@ -48,7 +80,8 @@ const CreateTask = () => {
       dueDate: '',
       assignedTo: [],
       todoChecklist: [],
-      attachments: []
+      attachments: [],
+      tags: []
     })
   }
 
@@ -149,12 +182,13 @@ const CreateTask = () => {
           description: taskInfo.description,
           priority: taskInfo.priority,
           dueDate: taskInfo.dueDate
-            ? dayjs(taskInfo.dueDate).format('YYYY-MM-DD') // ✅ formato para input date
-            : '', // ⚠ evitar null
-          assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [], // ✅ corregido _id
+            ? dayjs(taskInfo.dueDate).format('YYYY-MM-DD')
+            : '',
+          assignedTo: taskInfo?.assignedTo?.map((item) => item?._id) || [],
           todoChecklist:
             taskInfo?.todoChecklist?.map((item) => item?.text) || [],
           attachments: taskInfo?.attachments || [],
+          tags: taskInfo?.tags || [],
         }));
       }
     } catch(error) {
@@ -193,6 +227,21 @@ const CreateTask = () => {
                   <h2 className="text-xl md:text-xl font-medium text-gray-900 dark:text-white">
                     {taskId ? 'Actualizar tarea' : 'Crear tarea'}
                   </h2>
+                  {!taskId && templates.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <LuFileStack className="text-slate-400" />
+                      <select
+                        onChange={(e) => applyTemplate(e.target.value)}
+                        className="text-sm border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 bg-white dark:bg-slate-800"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Seleccionar plantilla</option>
+                        {templates.map(t => (
+                          <option key={t._id} value={t._id}>{t.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   {taskId && (
                     <button
                       onClick={() => setOpenDeleteAlert(true)}
@@ -294,6 +343,47 @@ const CreateTask = () => {
                           handleValueChange("attachments", value)
                         }
                       />
+                    </div>
+
+                    {/* Tags */}
+                    <div className="col-span-12 mt-3">
+                      <label className="text-xs font-medium text-slate-600 dark:text-gray-300">
+                        Etiquetas
+                      </label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {taskData.tags?.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
+                          >
+                            {tag}
+                            <button
+                              onClick={() => {
+                                const newTags = taskData.tags.filter((_, i) => i !== index);
+                                handleValueChange('tags', newTags);
+                              }}
+                              className="hover:text-indigo-900"
+                            >
+                              <LuX className="text-xs" />
+                            </button>
+                          </span>
+                        ))}
+                        <input
+                          type="text"
+                          placeholder="Agregar etiqueta..."
+                          className="px-3 py-1 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-primary"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && e.target.value.trim()) {
+                              e.preventDefault();
+                              const newTag = e.target.value.trim();
+                              if (!taskData.tags.includes(newTag)) {
+                                handleValueChange('tags', [...taskData.tags, newTag]);
+                              }
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
                 </div>
                     {error && (
