@@ -17,28 +17,23 @@ const connectDB = async () => {
     }
 };
 
-// URLs de imágenes profesionales (usando picsum para variedad)
-const avatars = [
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001810/task-manager/profiles/woman-1.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001811/task-manager/profiles/man-1.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001812/task-manager/profiles/woman-2.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001813/task-manager/profiles/man-2.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001814/task-manager/profiles/woman-3.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001815/task-manager/profiles/man-3.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001816/task-manager/profiles/woman-4.jpg",
-    "https://res.cloudinary.com/dr01howzx/image/upload/v1752001817/task-manager/profiles/man-4.jpg",
-];
-
-// Datos de usuarios profesionales
+// Función para obtener avatar según género usando randomuser.me
+const getAvatarUrl = (gender, index) => {
+    // Usamos la API de randomuser.me que permite especificar género
+    // Los índices 0-3 dan femenino, 4-7 dan masculino para mantener variedad
+    const genderCode = gender === "female" ? "female" : "male";
+    const seed = gender === "female" ? `female${index}` : `male${index}`;
+    return `https://randomuser.me/api/portraits/${genderCode}/${(index % 50) + 10}.jpg`;
+};
 const users = [
-    { name: "Ana García", email: "ana@empresa.com", role: "admin", avatarIndex: 0 },
-    { name: "Carlos López", email: "carlos@empresa.com", role: "member", avatarIndex: 1 },
-    { name: "María Rodríguez", email: "maria@empresa.com", role: "member", avatarIndex: 2 },
-    { name: "Javier Martínez", email: "javier@empresa.com", role: "member", avatarIndex: 3 },
-    { name: "Laura Sánchez", email: "laura@empresa.com", role: "member", avatarIndex: 4 },
-    { name: "Daniel Pérez", email: "daniel@empresa.com", role: "member", avatarIndex: 5 },
-    { name: "Sofia Gómez", email: "sofia@empresa.com", role: "member", avatarIndex: 6 },
-    { name: "Miguel Torres", email: "miguel@empresa.com", role: "member", avatarIndex: 7 },
+    { name: "Ana García", email: "ana@empresa.com", role: "admin", gender: "female" },
+    { name: "Carlos López", email: "carlos@empresa.com", role: "member", gender: "male" },
+    { name: "María Rodríguez", email: "maria@empresa.com", role: "member", gender: "female" },
+    { name: "Javier Martínez", email: "javier@empresa.com", role: "member", gender: "male" },
+    { name: "Laura Sánchez", email: "laura@empresa.com", role: "member", gender: "female" },
+    { name: "Daniel Pérez", email: "daniel@empresa.com", role: "member", gender: "male" },
+    { name: "Sofía Gómez", email: "sofia@empresa.com", role: "member", gender: "female" },
+    { name: "Miguel Torres", email: "miguel@empresa.com", role: "member", gender: "male" },
 ];
 
 const tasks = [
@@ -69,13 +64,19 @@ const seedDatabase = async () => {
         const adminToken = process.env.ADMIN_INVITE_TOKEN || "admin123";
 
         const createdUsers = [];
+        let femaleCount = 0;
+        let maleCount = 0;
 
         for (const user of users) {
+            // Generar índice basado en género
+            const avatarIndex = user.gender === "female" ? femaleCount++ : maleCount++;
+            const profileImageUrl = getAvatarUrl(user.gender, avatarIndex);
+            
             const created = await User.create({
                 name: user.name,
                 email: user.email,
                 password: defaultPassword,
-                profileImageUrl: `https://i.pravatar.cc/150?u=${user.email}`,
+                profileImageUrl,
                 role: user.role === "admin" ? "admin" : "member",
                 adminInviteToken: user.role === "admin" ? adminToken : undefined
             });
