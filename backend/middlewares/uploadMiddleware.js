@@ -1,22 +1,25 @@
-const multer = require("multer");
-const path = require("path");
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
 
-// Simple storage without fileFilter to avoid "Unexpected field" errors
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log("Multer: destination, file:", file.fieldname);
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    console.log("Multer: filename, file:", file.originalname);
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dr01howzx',
+  api_key: process.env.CLOUDINARY_API_KEY || '976376883728537',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'N7okmyr8NBrtOAer0bWgd3ZsrwU',
 });
 
-// Just use diskStorage with no fileFilter - accept everything
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'task-manager',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }],
+  },
+});
+
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
 
 module.exports = upload;
