@@ -17,14 +17,24 @@ const connectDB = async () => {
     }
 };
 
-// Función para obtener avatar según género usando randomuser.me
-const getAvatarUrl = (gender, index) => {
-    // Usamos la API de randomuser.me que permite especificar género
-    // Los índices 0-3 dan femenino, 4-7 dan masculino para mantener variedad
-    const genderCode = gender === "female" ? "female" : "male";
-    const seed = gender === "female" ? `female${index}` : `male${index}`;
-    return `https://randomuser.me/api/portraits/${genderCode}/${(index % 50) + 10}.jpg`;
-};
+// URLs de avatares funcionando - mujeres y hombres
+const femaleAvatars = [
+    "https://i.pravatar.cc/150?img=1",
+    "https://i.pravatar.cc/150?img=5",
+    "https://i.pravatar.cc/150?img=9",
+    "https://i.pravatar.cc/150?img=16",
+    "https://i.pravatar.cc/150?img=23",
+    "https://i.pravatar.cc/150?img=44",
+];
+
+const maleAvatars = [
+    "https://i.pravatar.cc/150?img=3",
+    "https://i.pravatar.cc/150?img=8",
+    "https://i.pravatar.cc/150?img=12",
+    "https://i.pravatar.cc/150?img=15",
+    "https://i.pravatar.cc/150?img=53",
+    "https://i.pravatar.cc/150?img=60",
+];
 const users = [
     { name: "Ana García", email: "ana@empresa.com", role: "admin", gender: "female" },
     { name: "Carlos López", email: "carlos@empresa.com", role: "member", gender: "male" },
@@ -68,9 +78,10 @@ const seedDatabase = async () => {
         let maleCount = 0;
 
         for (const user of users) {
-            // Generar índice basado en género
-            const avatarIndex = user.gender === "female" ? femaleCount++ : maleCount++;
-            const profileImageUrl = getAvatarUrl(user.gender, avatarIndex);
+            // Obtener avatar según género
+            const profileImageUrl = user.gender === "female" 
+                ? femaleAvatars[femaleCount++ % femaleAvatars.length]
+                : maleAvatars[maleCount++ % maleAvatars.length];
             
             const created = await User.create({
                 name: user.name,

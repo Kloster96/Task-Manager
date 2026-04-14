@@ -35,12 +35,17 @@ const UserProvider = ({ children }) => {
         localStorage.setItem("token", userData.token);
         setLoading(false);
     };
+
+    const updateUserData = (updates) => {
+        setUser((prev) => ({ ...prev, ...updates }));
+    };
+
     const clearUser = () => {
         setUser(null);
         localStorage.removeItem("token");
     };
     return (
-        <UserContext.Provider value={{ user, loading, updateUser, clearUser }}>
+        <UserContext.Provider value={{ user, loading, updateUser, updateUserData, clearUser }}>
             {children}
         </UserContext.Provider>
     );

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
+import ProfilePage from "./pages/Users/ProfilePage";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Admin/Dashboard";
 import ManageTasks from "./pages/Admin/ManageTasks";
@@ -38,6 +39,15 @@ const AppContent = () => {
               path="/user/task-details/:id" 
               element={<ViewTaskDetails />} 
             />
+            <Route 
+              path="/user/profile" 
+              element={<ProfilePage />} 
+            />
+          </Route>
+
+          {/* Rutas compartidas (admin y user) */}
+          <Route element={<PrivateRoute allowedRoles={["admin", "member"]} />}>
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           <Route path="/" element={<Root />} />
