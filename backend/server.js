@@ -9,6 +9,9 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const activityRoutes = require("./routes/activityRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const pdfRoutes = require("./routes/pdfRoutes");
 const app = express();
 
 app.use(
@@ -31,6 +34,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/activity", activityRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/pdf", pdfRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

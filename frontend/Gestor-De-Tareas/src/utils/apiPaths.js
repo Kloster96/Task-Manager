@@ -21,10 +21,9 @@ export const API_PATHS = {
     GET_USER_DATABOARD_DATA: "/api/tasks/dashboard-data",
     GET_ALL_TASKS: "/api/tasks",
     GET_TASK_BY_ID: (taskId) => `/api/tasks/${taskId}`,
-    CREATE_TASK: "/api/tasks", // ✅ le agregué la barra inicial también
+    CREATE_TASK: "/api/tasks",
     UPDATE_TASK: (taskId) => `/api/tasks/${taskId}`,
     DELETE_TASK: (taskId) => `/api/tasks/${taskId}`,
-
     UPDATE_TASK_STATUS: (taskId) => `/api/tasks/${taskId}/status`,
     UPDATE_TODO_CHECKLIST: (taskId) => `/api/tasks/${taskId}/todo`,
   },
@@ -36,5 +35,16 @@ export const API_PATHS = {
 
   IMAGE: {
     UPLOAD_IMAGE: "/api/auth/upload-image",
+  },
+
+  NOTIFICATIONS: {
+    GET_ALL: "/api/notifications",
+    MARK_READ: (id) => `/api/notifications/${id}/read`,
+    MARK_ALL_READ: "/api/notifications/read-all",
+    DELETE: (id) => `/api/notifications/${id}`,
+  },
+
+  PDF: {
+    EXPORT_TASKS: "/api/pdf/export-tasks-pdf",
   },
 };

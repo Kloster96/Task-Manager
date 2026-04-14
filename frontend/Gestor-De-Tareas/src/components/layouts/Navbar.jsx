@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { HiOutlineMenuAlt3, HiOutlineX } from 'react-icons/hi';
 import { LuSun, LuMoon } from 'react-icons/lu';
 import { ThemeContext } from '../../context/themeContext';
+import NotificationBell from './NotificationBell';
 
 const Navbar = () => {
     const [openSideMenu, setOpenSidemenu] = useState(false);
@@ -23,16 +24,19 @@ const Navbar = () => {
         </button>
         <h2 className="text-lg font-medium text-black dark:text-white">Control de Tareas</h2>
         
-        <button 
-            onClick={toggleTheme}
-            className="ml-auto mr-4 p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-        >
-            {isDarkMode ? (
-                <LuSun className="text-xl text-yellow-500" />
-            ) : (
-                <LuMoon className="text-xl text-gray-600" />
-            )}
-        </button>
+        <div className="flex items-center gap-2 ml-auto">
+            <NotificationBell />
+            <button 
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+                {isDarkMode ? (
+                    <LuSun className="text-xl text-yellow-500" />
+                ) : (
+                    <LuMoon className="text-xl text-gray-600" />
+                )}
+            </button>
+        </div>
     </div>
   )
 }

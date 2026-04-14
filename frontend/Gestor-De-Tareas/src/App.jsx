@@ -13,6 +13,7 @@ import ViewTaskDetails from "./pages/Users/ViewTaskDetails";
 import MyTasks from './pages/Users/MyTasks';
 import UserProvider, { UserContext } from './context/userContext';
 import { ThemeProvider } from './context/themeContext';
+import { NotificationProvider } from './context/notificationContext';
 import { Toaster } from 'react-hot-toast';
 
 const AppContent = () => {
@@ -61,15 +62,17 @@ const App = () => {
   return (
     <UserProvider>
       <ThemeProvider>
-        <AppContent />
-        <Toaster
-          toastOptions={{
-            className: "",
-            style: {
-              fontSize: "13px",
-            }
-          }} 
-        />
+        <NotificationProvider>
+          <AppContent />
+          <Toaster
+            toastOptions={{
+              className: "",
+              style: {
+                fontSize: "13px",
+              }
+            }} 
+          />
+        </NotificationProvider>
       </ThemeProvider>
     </UserProvider>
   );

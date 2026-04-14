@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/layouts/DashboardLayout'
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import { LuFileSpreadsheet } from 'react-icons/lu';
+import { LuFileSpreadsheet, LuFilter, LuX, LuFileText } from 'react-icons/lu';
 import TaskStatusTabs from '../../components/layouts/TaskStatusTabs';
 import TaskCard from '../../components/Cards/TaskCard';
 import toast from 'react-hot-toast';
@@ -11,25 +11,38 @@ import toast from 'react-hot-toast';
 const ManageTasks = () => {
 
   const [ allTasks, setAllTasks ] = useState([])
-
   const [ tabs, setTabs ] = useState([]);
   const [ filterStatus, setFilterStatus ] = useState("All");
+  
+  // Filtros avanzados
+  const [ showFilters, setShowFilters ] = useState(false);
+  const [ filters, setFilters ] = useState({
+    priority: '',
+    assignedTo: '',
+    dateFrom: '',
+    dateTo: '',
+    search: ''
+  });
+  const [ users, setUsers ] = useState([]);
 
   const navigate = useNavigate();
 
   const getAllTasks = async () => {
     try {
-      const response = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS,{
+      const response = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS, {
         params: {
-          status: filterStatus === "All" ? "" : filterStatus
+          status: filterStatus === "All" ? "" : filterStatus,
+          priority: filters.priority || '',
+          assignedTo: filters.assignedTo || '',
+          dateFrom: filters.dateFrom || '',
+          dateTo: filters.dateTo || '',
+          search: filters.search || ''
         },
       });
 
       setAllTasks(response.data?.tasks?.length > 0 ? response.data.tasks : [])
 
-      const statusSummary = response.data?.statusSummary || {
-
-      };
+      const statusSummary = response.data?.statusSummary || {};
 
       const statusArray = [
         {label: "All", count: statusSummary.all || 0},
@@ -40,24 +53,57 @@ const ManageTasks = () => {
       setTabs(statusArray);
 
     } catch(error) {
-      console.error("Error en la busqueda de usuarios", error);
+      console.error("Error en la busqueda de tareas", error);
     }
+  };
+
+  const getAllUsers = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS);
+      setUsers(response.data || []);
+    } catch(error) {
+      console.error("Error fetching users", error);
+    }
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      priority: '',
+      assignedTo: '',
+      dateFrom: '',
+      dateTo: '',
+      search: ''
+    });
+  };
+
+  const hasActiveFilters = () => {
+    return filters.priority || filters.assignedTo || filters.dateFrom || filters.dateTo || filters.search;
   };
 
   const handleClick = (taskData) => {
     navigate(`/admin/create-task`, {
-      state: { taskId: taskData._id }})
+      state: { taskId: taskData._id }}
+    );
   };
 
-  const handleDownloadReport = async () => {
+const handleDownloadReport = async (type = 'excel') => {
     try {
-      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
+      const endpoint = type === 'pdf' 
+        ? API_PATHS.PDF.EXPORT_TASKS 
+        : API_PATHS.REPORTS.EXPORT_TASKS;
+      
+      const response = await axiosInstance.get(endpoint, {
         responseType: "blob",
       });
+      
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "task_details.xlsx");
+      link.setAttribute("download", type === 'pdf' ? "tareas.pdf" : "task_details.xlsx");
       
       document.body.appendChild(link);
       link.click();
@@ -71,8 +117,16 @@ const ManageTasks = () => {
 
   useEffect(() => {
     getAllTasks(filterStatus);
-    return () => {};
   }, [filterStatus]);
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
+  // Aplicar filtros cuando cambian
+  useEffect(() => {
+    getAllTasks();
+  }, [filters]);
 
   return (
     <DashboardLayout activeMenu="Gestion de Tareas">
@@ -98,17 +152,149 @@ const ManageTasks = () => {
                 setActiveTab={setFilterStatus}
               />
 
-              <button className="hidden lg:flex download-btn" onClick={handleDownloadReport}>
+              <button 
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  showFilters || hasActiveFilters() 
+                    ? 'bg-primary text-white' 
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <LuFilter className="text-lg" />
+                Filtros
+                {hasActiveFilters() && (
+                  <span className="bg-white/20 px-1.5 py-0.5 rounded text-xs">
+                    {[filters.priority, filters.assignedTo, filters.dateFrom, filters.dateTo, filters.search].filter(Boolean).length}
+                  </span>
+                )}
+              </button>
+
+              <button 
+                className="hidden lg:flex download-btn gap-2" 
+                onClick={() => {
+                  // Por defecto descarga Excel
+                  handleDownloadReport('excel');
+                }}
+              >
                 <LuFileSpreadsheet className="text-lg" />
-                Descargar el informe
+                Excel
+              </button>
+
+              <button 
+                className="hidden lg:flex download-btn gap-2 bg-red-500 hover:bg-red-600" 
+                onClick={() => handleDownloadReport('pdf')}
+              >
+                <LuFileText className="text-lg" />
+                PDF
               </button>
             </div>
           )}
         </div>
 
+        {/* Filtros avanzados */}
+        {showFilters && (
+          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-medium text-gray-900 dark:text-white">Filtros Avanzados</h3>
+              {hasActiveFilters() && (
+                <button 
+                  onClick={clearFilters}
+                  className="text-sm text-red-500 hover:text-red-600 flex items-center gap-1"
+                >
+                  <LuX className="text-sm" />
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              {/* Buscar por título */}
+              <div className="lg:col-span-2">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Buscar por título
+                </label>
+                <input
+                  type="text"
+                  placeholder="Buscar tarea..."
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
 
+              {/* Prioridad */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Prioridad
+                </label>
+                <select
+                  value={filters.priority}
+                  onChange={(e) => handleFilterChange('priority', e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Todas</option>
+                  <option value="Low">Bajo</option>
+                  <option value="Medium">Medio</option>
+                  <option value="High">Alto</option>
+                </select>
+              </div>
+
+              {/* Usuario asignado */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Asignado a
+                </label>
+                <select
+                  value={filters.assignedTo}
+                  onChange={(e) => handleFilterChange('assignedTo', e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Todos</option>
+                  {users.map(user => (
+                    <option key={user._id} value={user._id}>{user.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Rango de fechas */}
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    Desde
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.dateFrom}
+                    onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                    className="w-full px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    Hasta
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.dateTo}
+                    onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                    className="w-full px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
+
+      {/* Mensaje si no hay resultados */}
+      {allTasks.length === 0 && (
+        <div className="text-center py-10">
+          <p className="text-gray-500 dark:text-gray-400">
+            {hasActiveFilters() ? 'No se encontraron tareas con los filtros aplicados' : 'No hay tareas disponibles'}
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
         {allTasks?.map((item, index) => (

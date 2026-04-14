@@ -2,11 +2,37 @@ const Task = require('../models/Task');
 
 const getTasks = async (req, res) => {
     try {
-        const { status } = req.query;
+        const { status, priority, assignedTo, dateFrom, dateTo, search } = req.query;
         let filter = {};
 
         if (status) {
             filter.status = status;
+        }
+
+        // Filtro por prioridad
+        if (priority) {
+            filter.priority = priority;
+        }
+
+        // Filtro por usuario asignado
+        if (assignedTo) {
+            filter.assignedTo = assignedTo;
+        }
+
+        // Filtro por rango de fechas
+        if (dateFrom || dateTo) {
+            filter.dueDate = {};
+            if (dateFrom) {
+                filter.dueDate.$gte = new Date(dateFrom);
+            }
+            if (dateTo) {
+                filter.dueDate.$lte = new Date(dateTo);
+            }
+        }
+
+        // Filtro por búsqueda en título
+        if (search) {
+            filter.title = { $regex: search, $options: 'i' };
         }
 
         let tasks;
@@ -49,7 +75,7 @@ const getTasks = async (req, res) => {
         const inProgressTasks = await Task.countDocuments(
             {
                 ...filter,
-                status: "In-progress",
+                status: "In Progress",
                 ...(req.user.role !== "admin" && { assignedTo: req.user._id })
             }
         )

@@ -6,13 +6,15 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AvatarGroup from '../../components/layouts/AvatarGroup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { LuSquareArrowOutUpRight } from "react-icons/lu";
+import { LuSquareArrowOutUpRight, LuPlus, LuTrash2 } from "react-icons/lu";
 
 dayjs.locale('es'); 
 
 const ViewTaskDetails = () => {
   const { id } = useParams();
   const [task, setTask] = useState(null);
+  const [newTodoItem, setNewTodoItem] = useState('');
+  const [showAddTodo, setShowAddTodo] = useState(false);
 
   const getStatusTagColor = (status) => {
     switch (status) {
@@ -52,23 +54,63 @@ const ViewTaskDetails = () => {
     }
   };
 
-  const updateTodoChecklist = async () => {
+  const updateTodoChecklist = async (index) => {
     const todoChecklist = [...task?.todoChecklist];
     const taskId = id;
-    if(todoChecklist && todoChecklist[index]) {
+    
+    if (todoChecklist && todoChecklist[index]) {
       todoChecklist[index].completed = !todoChecklist[index].completed;
-    } try {
-        const response = await axiosInstance.put(
-          API_PATHS.TASKS.UPDATE_TODO_CHECKLIST(taskId),
-          { todoChecklist }
-        );
-      if(response.status === 200) {
+    }
+    
+    try {
+      const response = await axiosInstance.put(
+        API_PATHS.TASKS.UPDATE_TODO_CHECKLIST(taskId),
+        { todoChecklist }
+      );
+      if (response.status === 200) {
         setTask(response.data?.task || task);
-      } else {
-        todoChecklist[index].completed = !todoChecklist[index].completed;
       }
     } catch (error) {
-      todoChecklist[index].completed = !todoChecklist[index].completed
+      console.error("Error updating todo:", error);
+    }
+  };
+
+  const addTodoItem = async () => {
+    if (!newTodoItem.trim()) return;
+    
+    const todoChecklist = [
+      ...(task?.todoChecklist || []),
+      { text: newTodoItem.trim(), completed: false }
+    ];
+    
+    try {
+      const response = await axiosInstance.put(
+        API_PATHS.TASKS.UPDATE_TODO_CHECKLIST(id),
+        { todoChecklist }
+      );
+      if (response.status === 200) {
+        setTask(response.data?.task || task);
+        setNewTodoItem('');
+        setShowAddTodo(false);
+      }
+    } catch (error) {
+      console.error("Error adding todo:", error);
+    }
+  };
+
+  const deleteTodoItem = async (index) => {
+    const todoChecklist = task?.todoChecklist.filter((_, i) => i !== index);
+    
+    try {
+      const response = await axiosInstance.put(
+        API_PATHS.TASKS.UPDATE_TODO_CHECKLIST(id),
+        { todoChecklist }
+      );
+      if (response.status === 200) {
+        setTask(response.data?.task || task);
+      }
+    } catch (error) {
+      console.error("Error deleting todo:", error);
     }
   };
 
@@ -85,6 +127,11 @@ const ViewTaskDetails = () => {
     }
     return () => {};
   }, [id]);
+
+  // Calcular progreso
+  const completedTodos = task?.todoChecklist?.filter(t => t.completed).length || 0;
+  const totalTodos = task?.todoChecklist?.length || 0;
+  const progress = totalTodos > 0 ? Math.round((completedTodos / totalTodos) * 100) : 0;
 
   return (
     <DashboardLayout activeMemu="Mis Tareas">
@@ -132,22 +179,80 @@ const ViewTaskDetails = () => {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <label className="text-xs font-medium text-slate-500">
-                  Lista de Tareas
-                </label>
-                {task?.todoChecklist?.map((item, index) => (
-                  <TodoCheckList 
-                    key={`todo_${index}`}
-                    text={item.text}
-                    isChecked={item?.completed} // corregido
-                    onChange={() => updateTodoChecklist(index)}
-                  />
-                ))}
+              {/* Checklist con progreso */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-medium text-slate-700 dark:text-gray-300">
+                    Lista de Tareas
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">
+                      {completedTodos}/{totalTodos} ({progress}%)
+                    </span>
+                    <button
+                      onClick={() => setShowAddTodo(!showAddTodo)}
+                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-primary"
+                    >
+                      <LuPlus className="text-lg" />
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Barra de progreso */}
+                {totalTodos > 0 && (
+                  <div className="w-full bg-gray-200 rounded-full h-2 mb-3 dark:bg-gray-700">
+                    <div 
+                      className="bg-primary h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
+                )}
+
+                {/* Agregar nuevo item */}
+                {showAddTodo && (
+                  <div className="flex gap-2 mb-3">
+                    <input
+                      type="text"
+                      value={newTodoItem}
+                      onChange={(e) => setNewTodoItem(e.target.value)}
+                      placeholder="Nueva subtarea..."
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                      onKeyPress={(e) => e.key === 'Enter' && addTodoItem()}
+                    />
+                    <button
+                      onClick={addTodoItem}
+                      className="px-3 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-dark"
+                    >
+                      Agregar
+                    </button>
+                    <button
+                      onClick={() => { setShowAddTodo(false); setNewTodoItem(''); }}
+                      className="px-3 py-2 text-gray-500 text-sm hover:text-gray-700"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
+
+                {/* Lista de tareas */}
+                <div className="space-y-2">
+                  {task?.todoChecklist?.map((item, index) => (
+                    <TodoCheckList 
+                      key={`todo_${index}`}
+                      text={item.text}
+                      isChecked={item?.completed}
+                      onChange={() => updateTodoChecklist(index)}
+                      onDelete={() => deleteTodoItem(index)}
+                    />
+                  ))}
+                  {totalTodos === 0 && (
+                    <p className="text-sm text-gray-400 italic">No hay subtareas. Agregá una!</p>
+                  )}
+                </div>
               </div>
 
               {task?.attachments?.length > 0 && (
-                <div className="mt-2">
+                <div className="mt-6">
                   <label className="text-xs font-medium text-slate-500">
                     Archivos Adjuntos
                   </label>
@@ -173,40 +278,45 @@ export default ViewTaskDetails;
 
 const InfoBox = ({ label, value }) => (
   <>
-    <label className="text-xs font-medium text-slate-500">{label}</label>
-    <p className="text-[12px] md:text-[12px] font-medium text-gray-700 mt-1">{value}</p>
+    <label className="text-xs font-medium text-slate-500 dark:text-gray-400">{label}</label>
+    <p className="text-[12px] md:text-[12px] font-medium text-gray-700 mt-1 dark:text-gray-300">{value || 'N/A'}</p>
   </>
 );
 
-const TodoCheckList = ({ isChecked, onChange, text }) => (
-  <div className="flex items-center gap-3 p-3">
+const TodoCheckList = ({ isChecked, onChange, onDelete, text }) => (
+  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg group hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors">
     <input 
       type="checkbox"
-      className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded-sm outline-none cursor-pointer" 
+      className="w-5 h-5 text-primary bg-white border-2 border-gray-300 rounded-md outline-none cursor-pointer accent-primary" 
       checked={isChecked}
       onChange={onChange}
     />
-    <p className="text-[12px] text-gray-800">
+    <p className={`flex-1 text-sm ${isChecked ? 'text-gray-400 line-through' : 'text-gray-800 dark:text-gray-200'}`}>
       {text}
     </p>
+    <button 
+      onClick={onDelete}
+      className="opacity-0 group-hover:opacity-100 p-1 text-red-500 hover:text-red-600 transition-opacity"
+      title="Eliminar"
+    >
+      <LuTrash2 className="text-base" />
+    </button>
   </div>
 );
 
 const Attachment = ({ link, index, onClick }) => (
   <div 
-    className="flex justify-between bg-gray-50 border border-gray-100 px-3 py-2 rounded-md mb-3 mt-2 cursor-pointer"
+    className="flex justify-between bg-gray-50 border border-gray-100 dark:bg-gray-800 dark:border-gray-700 px-3 py-2 rounded-md mb-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
     onClick={onClick}
   >
-    <div className="flex-1 flex items-center gap-3 border border-gray-100">
-      <span className="text-xs text-gray-400 font-semibold mr-2">
+    <div className="flex items-center gap-3">
+      <span className="text-xs text-gray-400 font-semibold">
         {index < 9 ? `0${index + 1}` : index + 1}
       </span>
-
-      <p className="text-xs text-black break-all">
+      <p className="text-xs text-black dark:text-white break-all">
         {link}
       </p>
-
-      <LuSquareArrowOutUpRight className="text-gray-400" />
     </div>
+    <LuSquareArrowOutUpRight className="text-gray-400" />
   </div>
 );
