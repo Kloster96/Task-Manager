@@ -18,9 +18,8 @@ router.post("/upload-image", upload.any(), (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
     const file = req.files[0];
-    // Always use https in production (Render)
-    const protocol = req.get("host").includes("render.com") ? "https" : req.protocol;
-    const imageUrl = `${protocol}://${req.get("host")}/uploads/${file.filename}`;
+    // file.path contiene la URL pública de Cloudinary
+    const imageUrl = file.path;
     res.status(200).json({ imageUrl });
 });
 
