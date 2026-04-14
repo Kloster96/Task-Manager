@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { LuBell, LuCheck, LuTrash2 } from 'react-icons/lu';
-import { NotificationContext } from '../context/notificationContext';
+import { NotificationContext } from '../../context/notificationContext';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { useNavigate } from 'react-router-dom';
