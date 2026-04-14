@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
 import ProfilePage from "./pages/Users/ProfilePage";
+import KanbanBoard from "./pages/Admin/KanbanBoard";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Admin/Dashboard";
 import ManageTasks from "./pages/Admin/ManageTasks";
@@ -28,6 +29,7 @@ const AppContent = () => {
           <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/tasks" element={<ManageTasks />} />
+            <Route path="/admin/kanban" element={<KanbanBoard />} />
             <Route path="/admin/create-task" element={<CreateTask />} />
             <Route path="/admin/users" element={<ManageUsers />} />
           </Route>

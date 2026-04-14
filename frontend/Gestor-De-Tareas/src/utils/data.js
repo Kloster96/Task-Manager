@@ -4,7 +4,8 @@ import {
     LuClipboardCheck,
     LuSquarePlus,
     LuLogOut,
-    LuUser
+    LuUser,
+    LuKanban
 } from "react-icons/lu";
 
 export const SIDE_MENU_DATA = [
@@ -19,6 +20,12 @@ export const SIDE_MENU_DATA = [
         label: "Gestion de Tareas",
         icon: LuClipboardCheck,
         path: "/admin/tasks"
+    },
+    {
+        id: "02b",
+        label: "Kanban",
+        icon: LuKanban,
+        path: "/admin/kanban"
     },
     {
         id: "03",

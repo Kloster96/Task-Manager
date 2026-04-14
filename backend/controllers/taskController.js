@@ -409,12 +409,72 @@ const updateChecklist = async (req, res) => {
             "assignedTo",
             "name email profileImageUrl"
         );
-        res.json({ message: 'Checklist updated successfully', task: updatedTask });
+res.json({ message: 'Checklist updated successfully', task: updatedTask });
 
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
- } 
+  } 
+
+// Agregar comentario a una tarea
+const addComment = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+        
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        const comment = {
+            user: req.user._id,
+            text: req.body.text,
+            createdAt: new Date()
+        };
+
+        task.comments.push(comment);
+        await task.save();
+
+        const updatedTask = await Task.findById(req.params.id)
+            .populate('comments.user', 'name profileImageUrl');
+
+        res.status(201).json({ 
+            message: 'Comment added successfully', 
+            task: updatedTask 
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+// Eliminar comentario
+const deleteComment = async (req, res) => {
+    try {
+        const { taskId, commentId } = req.params;
+        const task = await Task.findById(taskId);
+        
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        const comment = task.comments.id(commentId);
+        
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        // Solo el autor del comentario o un admin puede eliminarlo
+        if (comment.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Not authorized to delete this comment' });
+        }
+
+        comment.deleteOne();
+        await task.save();
+
+        res.json({ message: 'Comment deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
 
 
 module.exports = {
@@ -426,5 +486,7 @@ module.exports = {
     updateTaskStatus,
     getDashboardData,
     getUserDashboardData,
-    updateChecklist
+    updateChecklist,
+    addComment,
+    deleteComment
 };

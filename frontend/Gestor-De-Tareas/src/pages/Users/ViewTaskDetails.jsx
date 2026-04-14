@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from '../../utils/apiPaths';
@@ -6,7 +6,9 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AvatarGroup from '../../components/layouts/AvatarGroup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { LuSquareArrowOutUpRight, LuPlus, LuTrash2 } from "react-icons/lu";
+import { LuSquareArrowOutUpRight, LuPlus, LuTrash2, LuMessageCircle, LuSend } from "react-icons/lu";
+import { UserContext } from '../../context/userContext';
+import toast from 'react-hot-toast';
 
 dayjs.locale('es'); 
 
@@ -15,6 +17,9 @@ const ViewTaskDetails = () => {
   const [task, setTask] = useState(null);
   const [newTodoItem, setNewTodoItem] = useState('');
   const [showAddTodo, setShowAddTodo] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [showComments, setShowComments] = useState(false);
+  const { user } = useContext(UserContext);
 
   const getStatusTagColor = (status) => {
     switch (status) {
@@ -111,6 +116,37 @@ const ViewTaskDetails = () => {
       }
     } catch (error) {
       console.error("Error deleting todo:", error);
+    }
+  };
+
+  // Comentarios
+  const addComment = async () => {
+    if (!newComment.trim()) return;
+    
+    try {
+      const response = await axiosInstance.post(
+        API_PATHS.TASKS.ADD_COMMENT(id),
+        { text: newComment }
+      );
+      if (response.status === 201) {
+        setTask(response.data?.task || task);
+        setNewComment('');
+        toast.success('Comentario agregado');
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      toast.error('Error al agregar comentario');
+    }
+  };
+
+  const deleteComment = async (commentId) => {
+    try {
+      await axiosInstance.delete(API_PATHS.TASKS.DELETE_COMMENT(id, commentId));
+      const response = await axiosInstance.get(API_PATHS.TASKS.GET_TASK_BY_ID(id));
+      setTask(response.data);
+      toast.success('Comentario eliminado');
+    } catch (error) {
+      console.error("Error deleting comment:", error);
     }
   };
 
@@ -251,7 +287,7 @@ const ViewTaskDetails = () => {
                 </div>
               </div>
 
-              {task?.attachments?.length > 0 && (
+{task?.attachments?.length > 0 && (
                 <div className="mt-6">
                   <label className="text-xs font-medium text-slate-500">
                     Archivos Adjuntos
@@ -265,6 +301,87 @@ const ViewTaskDetails = () => {
                     />
                   ))}
                 </div>
+              )}
+
+              {/* Comments Section */}
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <button
+                  onClick={() => setShowComments(!showComments)}
+                  className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary"
+                >
+                  <LuMessageCircle className="text-lg" />
+                  Comentarios ({task?.comments?.length || 0})
+                </button>
+
+                {showComments && (
+                  <div className="mt-4 space-y-4">
+                    {/* Add Comment */}
+                    <div className="flex gap-3">
+                      <img
+                        src={user?.profileImageUrl || 'https://via.placeholder.com/32'}
+                        alt={user?.name}
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <div className="flex-1 flex gap-2">
+                        <input
+                          type="text"
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          placeholder="Escribir un comentario..."
+                          className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800"
+                          onKeyPress={(e) => e.key === 'Enter' && addComment()}
+                        />
+                        <button
+                          onClick={addComment}
+                          className="p-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+                        >
+                          <LuSend className="text-sm" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Comments List */}
+                    <div className="space-y-3">
+                      {task?.comments?.map((comment, index) => (
+                        <div key={index} className="flex gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                          <img
+                            src={comment.user?.profileImageUrl || 'https://via.placeholder.com/32'}
+                            alt={comment.user?.name}
+                            className="w-8 h-8 rounded-full"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium text-slate-800 dark:text-white">
+                                {comment.user?.name || 'Usuario'}
+                              </span>
+                              <span className="text-xs text-slate-400">
+                                {dayjs(comment.createdAt).fromNow()}
+                              </span>
+                            </div>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                              {comment.text}
+                            </p>
+                          </div>
+                          {(comment.user?._id === user?._id || user?.role === 'admin') && (
+                            <button
+                              onClick={() => deleteComment(comment._id)}
+                              className="p-1 text-slate-400 hover:text-red-500"
+                            >
+                              <LuTrash2 className="text-sm" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                      {(!task?.comments || task.comments.length === 0) && (
+                        <p className="text-sm text-slate-400 text-center py-4">
+                          No hay comentarios aún
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
               )}
             </div>
           </div>
