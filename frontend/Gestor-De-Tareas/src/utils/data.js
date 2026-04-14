@@ -5,7 +5,7 @@ import {
     LuSquarePlus,
     LuLogOut,
     LuUser,
-    LuKanban,
+    LuLayoutGrid,
     LuCalendar
 } from "react-icons/lu";
 
@@ -24,8 +24,8 @@ export const SIDE_MENU_DATA = [
     },
     {
         id: "02b",
-        label: "Kanban",
-        icon: LuKanban,
+        label: "Tablero",
+        icon: LuLayoutGrid,
         path: "/admin/kanban"
     },
     {

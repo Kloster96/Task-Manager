@@ -37,6 +37,7 @@ export const API_PATHS = {
 
   IMAGE: {
     UPLOAD_IMAGE: "/api/auth/upload-image",
+    UPLOAD_ATTACHMENT: "/api/auth/upload-attachment",
   },
 
   NOTIFICATIONS: {
