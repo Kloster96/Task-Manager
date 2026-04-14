@@ -1,220 +1,137 @@
 <div align="center">
 
-# 📋 Task Manager
+# 📋 Task Manager - Gestor de Tareas
 
-**Full-stack task management and tracking application with role-based access, real-time dashboards, and exportable reports.**
+**Aplicación web completa para gestión de tareas y trabajo en equipo**
 
-![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=flat-square&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white)
-![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react&logoColor=black)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)
-![Tailwind](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=json-web-tokens&logoColor=white)
+🌐 **Demo en vivo:** https://task-manager-86asjpjj5-kloster96s-projects.vercel.app
 
----
-
-## 🚀 Demo
-
-Probá la app right ahora — sin instalar nada:
-
-| | URL |
-|--|-----|
-| **Frontend** | https://task-manager-86asjpjj5-kloster96s-projects.vercel.app |
-| **Backend** | https://task-manager-11hj.onrender.com |
-
-> ⚠️ El backend en Render usa el tier gratuito — la primera request puede tardar ~15s (cold start).
-
-### Credenciales de prueba
-
-- **Admin**: Pedile el token de invitación al admin (`ADMIN_INVITE_TOKEN: 4588944`) o
-- **Miembro**: Registrate normalmente sin token
-
----
+🔐 **Credenciales de prueba:**
+- Admin: `ana@empresa.com` / `password123`
+- Miembro: cualquier email nuevo (registrate desde la app)
 
 </div>
 
 ---
 
-## 🎯 Problem Statement
+## 👋 ¡Hola! Soy Luciano Kloster
 
-Teams that need to organize collaborative work without relying on expensive enterprise tools. An admin creates and assigns tasks; members execute them, update checklists, and attach evidence. Everything is tracked with dashboards and exportable to Excel.
+Soy un **desarrollador Full Stack Jr.** con pasión por crear soluciones tecnológicas que resuelvan problemas reales. Este proyecto es mi primer aplicación completa desarrollada desde cero.
 
----
+### 🎯 ¿Qué es este proyecto?
 
-## 🏗 Architecture
-
-```
-┌─────────────────────────────────────────────────┐
-│                   FRONTEND                       │
-│  React 19 + Vite + TailwindCSS 4                │
-│  React Router v7 · Axios · Recharts             │
-│  Context API for auth state management          │
-├─────────────────────────────────────────────────┤
-│                    REST API                       │
-│  Express 5 · JWT · Multer · ExcelJS             │
-│  RBAC (admin / member) · Auth middlewares       │
-├─────────────────────────────────────────────────┤
-│                   DATABASE                        │
-│  MongoDB Atlas · Mongoose ODM                    │
-│  Aggregation pipelines for analytics            │
-└─────────────────────────────────────────────────┘
-```
+Es un **gestor de tareas colaborativo** donde equipos de trabajo pueden:
+- ✅ Crear y asignar tareas
+- 📊 Ver el progreso en dashboards y gráficos
+- 📅 Organizar tareas en tablero visual (Kanban) o calendario
+- 💬 Comentar y colaborar en cada tarea
+- 📎 Adjuntar archivos e imágenes
+- 🔔 Recibir notificaciones en tiempo real
+- 📥 Exportar reportes a Excel y PDF
 
 ---
 
-## ✨ Features
-
-### Authentication & Authorization
-- 🔐 Registration with avatar and optional admin token
-- 🛡 JWT with automatic refresh via Axios interceptor
-- 👥 Two roles: **Admin** (full CRUD) and **Member** (assigned tasks only)
-
-### Task Management
-- 📝 CRUD with title, description, priority, and due date
-- 👤 Multi-member assignment per task
-- ✅ Interactive checklist with auto-calculated progress
-- 📎 URL-based attachments with preview
-- 🔄 Automatic status transitions based on progress (Pending → In Progress → Completed)
-
-### Dashboard & Reports
-- 📊 Distribution charts by status (Pie) and priority (Bar) using Recharts
-- 📈 Real-time metric cards
-- 📁 Excel (.xlsx) export for tasks and users via ExcelJS
-- 🔍 Status-based filtering with tabs
-
-### UI/UX
-- 📱 Responsive design (mobile-first with hamburger menu)
-- 🇪🇸 Spanish-localized interface with Day.js date formatting
-- 🔔 Toast notifications for immediate feedback
-- 🖼 Grouped avatars on task cards
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology | Detail |
-|-------|-----------|--------|
-| **Frontend** | React 19 + Vite 6 | SPA with hot reload |
-| **Styling** | TailwindCSS 4 | Utility-first, responsive |
-| **Routing** | React Router v7 | Role-protected routes |
-| **HTTP** | Axios | Centralized instance with JWT interceptor |
-| **Charts** | Recharts | Custom Pie + Bar charts |
-| **Backend** | Express 5 | REST API |
-| **Database** | MongoDB Atlas | Mongoose ODM |
-| **Auth** | bcryptjs + JWT | Hash + token-based |
-| **Uploads** | Multer | Disk-stored images |
-| **Reports** | ExcelJS | Streaming .xlsx generation |
-| **Deploy** | Vercel + Render + Atlas | Automatic CI/CD |
-
----
-
-## 📂 Project Structure
-
-```
-├── backend/
-│   ├── config/          # MongoDB connection
-│   ├── controllers/     # Business logic (auth, tasks, users, reports)
-│   ├── middlewares/     # Auth (protect, adminOnly), upload (multer)
-│   ├── models/          # Mongoose schemas (User, Task)
-│   ├── routes/          # REST routes by domain
-│   ├── uploads/         # Uploaded files
-│   └── server.js        # Entry point
-│
-├── frontend/
-│   └── Gestor-De-Tareas/
-│       └── src/
-│           ├── components/  # Cards, Inputs, Layouts, Charts
-│           ├── context/     # UserContext (React Context API)
-│           ├── hook/        # useUserAuth
-│           ├── pages/       # Admin, Users, Auth
-│           ├── routes/      # PrivateRoute
-│           └── utils/       # API paths, axios instance, helpers
-│
-└── README.md
-```
-
----
-
-## 🔌 API Endpoints
-
-### Auth `/api/auth`
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `POST` | `/register` | — | Register (with optional admin token) |
-| `POST` | `/login` | — | Login, returns JWT |
-| `GET` | `/profile` | ✅ | Current user profile |
-| `PUT` | `/profile` | ✅ | Update profile |
-
-### Tasks `/api/tasks`
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `GET` | `/dashboard-data` | ✅ Admin | Global stats + charts |
-| `GET` | `/user-dashboard-data` | ✅ | Personal stats |
-| `GET` | `/` | ✅ | List tasks (filtered by role) |
-| `GET` | `/:id` | ✅ | Task detail |
-| `POST` | `/` | ✅ Admin | Create task |
-| `PUT` | `/:id` | ✅ | Update task |
-| `DELETE` | `/:id` | ✅ Admin | Delete task |
-| `PUT` | `/:id/status` | ✅ | Change status |
-| `PUT` | `/:id/todo` | ✅ | Update checklist |
-
-### Reports `/api/reports`
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `GET` | `/export/tasks` | ✅ Admin | Download tasks (.xlsx) |
-| `GET` | `/export/users` | ✅ Admin | Download users (.xlsx) |
-
----
-
-## ⚡ Local Setup
-
-```bash
-# Clone repository
-git clone https://github.com/Kloster96/Task-Manager.git
-cd Task-Manager
-```
-
-### Backend
-```bash
-cd backend
-npm install
-
-# Create .env file
-cat > .env << EOF
-MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/gestor-tareas
-JWT_SECRET=your_jwt_secret
-PORT=5000
-ADMIN_INVITE_TOKEN=4588944
-CLIENT_URL=http://localhost:5173
-EOF
-
-npm run dev
-```
+## 🛠️ Tecnologías que usé
 
 ### Frontend
+- **React 19** - Bibliotecapara crear la interfaz de usuario
+- **Vite** - Herramienta para desarrollo rápido
+- **Tailwind CSS** - Para diseñar y dar estilo
+- **Recharts** - Para crear gráficos interactivos
+
+### Backend
+- **Node.js + Express** - Servidor y API REST
+- **MongoDB** - Base de datos (guardar información)
+- **JWT** - Sistema de autenticación seguro
+
+### Herramientas extras
+- **Cloudinary** - Para subir imágenes y archivos
+- **Socket.io** - Notificaciones en tiempo real
+- **ExcelJS + PDFKit** - Generar reportes
+
+---
+
+## ✨ Lo que más me enorgullece
+
+1. **Diseño responsivo** - Funciona en celular y escritorio
+2. **Modo oscuro** - Para descansar la vista
+3. **Experiencia de usuario** - Botones, animaciones, feedback inmediato
+4. **Código limpio** - Estructurado y fácil de mantener
+5. **Deploy completo** - Subido a internet (Vercel + Render)
+
+---
+
+## 📊 Lo que aprendí haciendo este proyecto
+
+- 🏗️ **Arquitectura full-stack** - Cómo conectar frontend con backend
+- 🔐 **Autenticación** - JWT, roles de usuario, protección de rutas
+- 📈 **Base de datos** - MongoDB, modelos, relaciones
+- 🎨 **Diseño UI/UX** - Tailwind, componentes, responsive design
+- 🚀 **Deploy** - Publicar apps en internet (Vercel, Render)
+- 🔧 **Buenas prácticas** - Clean code, Git,解决问题的能力
+
+---
+
+## 📁 Estructura del proyecto
+
+```
+Task-Manager/
+├── backend/          # Servidor (Node.js, Express, MongoDB)
+│   ├── controllers/ # Lógica del negocio
+│   ├── models/      # Modelos de datos
+│   ├── routes/      # Rutas de la API
+│   └── server.js   # Punto de entrada
+│
+└── frontend/        # Cliente (React, Tailwind)
+    └── src/
+        ├── components/  # Componentes reutilizables
+        ├── pages/      # Páginas de la app
+        └── context/    # Estado global
+```
+
+---
+
+## 🚀 ¿Cómo probarlo?
+
+### Opción 1: Demo online (recomendado)
+Visitar: https://task-manager-86asjpjj5-kloster96s-projects.vercel.app
+
+### Opción 2: Ejecutar localmente
 ```bash
-cd frontend/Gestor-De-Tareas
+# Clonar el proyecto
+git clone https://github.com/Kloster96/Task-Manager.git
+
+# Instalar dependencias
+cd Task-Manager/backend
 npm install
+
+cd ../frontend/Gestor-De-Tareas  
+npm install
+
+# Ejecutar
 npm run dev
 ```
 
-> App runs at `http://localhost:5173` (frontend) and `http://localhost:5000` (backend).
+---
+
+## 📬 Contacto
+
+📧 **Email:** kloster.luciano@gmail.com
+
+💻 **GitHub:** github.com/Kloster96
 
 ---
 
-## 👨‍💻 Author
+## 🔜 ¿Qué sigue?
 
-**Luciano Kloster**
+Estoy buscando mi **primer empleo como desarrollador web** donde pueda:
+- Continuar aprendiendo y creciendo
+- Aportar valor real a un equipo
+- Trabajar con tecnologías modernas
 
-[![GitHub](https://img.shields.io/badge/GitHub-Kloster96-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Kloster96)
+Tengo muchas ganas de sumar experiencia y demostrar lo que puedo aportar. ¡Espero que este proyecto haya despertado tu interés! 😊
 
 ---
 
-## 📝 What I Learned
-
-- Designing a REST API with role-based access control (RBAC)
-- File upload handling with Multer and static serving
-- MongoDB aggregation pipelines for real-time dashboards
-- Axios interceptors for automatic auth and centralized error handling
-- Full-stack deployment on free-tier services (Vercel + Render + Atlas)
-- Excel report generation with backend streaming
+*Última actualización: Abril 2026*
+*Proyecto desarrollado como portafolio profesional*
