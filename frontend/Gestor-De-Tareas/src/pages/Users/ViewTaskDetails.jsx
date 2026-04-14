@@ -6,11 +6,13 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import AvatarGroup from '../../components/layouts/AvatarGroup';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { LuSquareArrowOutUpRight, LuPlus, LuTrash2, LuMessageCircle, LuSend } from "react-icons/lu";
 import { UserContext } from '../../context/userContext';
 import toast from 'react-hot-toast';
 
-dayjs.locale('es'); 
+dayjs.locale('es');
+dayjs.extend(relativeTime);
 
 const ViewTaskDetails = () => {
   const { id } = useParams();
@@ -24,9 +26,9 @@ const ViewTaskDetails = () => {
   const getStatusTagColor = (status) => {
     switch (status) {
       case "In Progress":
-        return "text-cyan-500 bg-cyan-50 border border-cyan-500/10";
+        return "text-sky-500 bg-sky-50 border border-sky-500/10";
       case "Completed":
-        return "text-lime-500 bg-lime-50 border border-lime-500/20";
+        return "text-emerald-500 bg-emerald-50 border border-emerald-500/20";
       case "Pending":
         return "text-violet-500 bg-violet-50 border border-violet-500/10";
       default:
@@ -119,7 +121,6 @@ const ViewTaskDetails = () => {
     }
   };
 
-  // Comentarios
   const addComment = async () => {
     if (!newComment.trim()) return;
     
@@ -161,10 +162,8 @@ const ViewTaskDetails = () => {
     if (id) {
       getTaskDetailsByID();
     }
-    return () => {};
   }, [id]);
 
-  // Calcular progreso
   const completedTodos = task?.todoChecklist?.filter(t => t.completed).length || 0;
   const totalTodos = task?.todoChecklist?.length || 0;
   const progress = totalTodos > 0 ? Math.round((completedTodos / totalTodos) * 100) : 0;
@@ -215,7 +214,7 @@ const ViewTaskDetails = () => {
                 </div>
               </div>
 
-              {/* Checklist con progreso */}
+              {/* Checklist */}
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-sm font-medium text-slate-700 dark:text-gray-300">
@@ -234,7 +233,6 @@ const ViewTaskDetails = () => {
                   </div>
                 </div>
                 
-                {/* Barra de progreso */}
                 {totalTodos > 0 && (
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-3 dark:bg-gray-700">
                     <div 
@@ -244,7 +242,6 @@ const ViewTaskDetails = () => {
                   </div>
                 )}
 
-                {/* Agregar nuevo item */}
                 {showAddTodo && (
                   <div className="flex gap-2 mb-3">
                     <input
@@ -253,7 +250,7 @@ const ViewTaskDetails = () => {
                       onChange={(e) => setNewTodoItem(e.target.value)}
                       placeholder="Nueva subtarea..."
                       className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                      onKeyPress={(e) => e.key === 'Enter' && addTodoItem()}
+                      onKeyDown={(e) => e.key === 'Enter' && addTodoItem()}
                     />
                     <button
                       onClick={addTodoItem}
@@ -270,7 +267,6 @@ const ViewTaskDetails = () => {
                   </div>
                 )}
 
-                {/* Lista de tareas */}
                 <div className="space-y-2">
                   {task?.todoChecklist?.map((item, index) => (
                     <TodoCheckList 
@@ -287,7 +283,8 @@ const ViewTaskDetails = () => {
                 </div>
               </div>
 
-{task?.attachments?.length > 0 && (
+              {/* Attachments */}
+              {task?.attachments?.length > 0 && (
                 <div className="mt-6">
                   <label className="text-xs font-medium text-slate-500">
                     Archivos Adjuntos
@@ -303,7 +300,7 @@ const ViewTaskDetails = () => {
                 </div>
               )}
 
-              {/* Comments Section */}
+              {/* Comments */}
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                 <button
                   onClick={() => setShowComments(!showComments)}
@@ -315,7 +312,6 @@ const ViewTaskDetails = () => {
 
                 {showComments && (
                   <div className="mt-4 space-y-4">
-                    {/* Add Comment */}
                     <div className="flex gap-3">
                       <img
                         src={user?.profileImageUrl || 'https://via.placeholder.com/32'}
@@ -329,7 +325,7 @@ const ViewTaskDetails = () => {
                           onChange={(e) => setNewComment(e.target.value)}
                           placeholder="Escribir un comentario..."
                           className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800"
-                          onKeyPress={(e) => e.key === 'Enter' && addComment()}
+                          onKeyDown={(e) => e.key === 'Enter' && addComment()}
                         />
                         <button
                           onClick={addComment}
@@ -340,7 +336,6 @@ const ViewTaskDetails = () => {
                       </div>
                     </div>
 
-                    {/* Comments List */}
                     <div className="space-y-3">
                       {task?.comments?.map((comment, index) => (
                         <div key={index} className="flex gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
@@ -381,8 +376,6 @@ const ViewTaskDetails = () => {
                   </div>
                 )}
               </div>
-            </div>
-              )}
             </div>
           </div>
         )}
