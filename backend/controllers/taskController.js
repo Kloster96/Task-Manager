@@ -129,7 +129,8 @@ const createTask = async (req, res) => {
             dueDate, 
             assignedTo , 
             attachments, 
-            todoChecklist
+            todoChecklist,
+            tags
         } = req.body;
 
         if(!Array.isArray(assignedTo)) {
@@ -146,8 +147,30 @@ const createTask = async (req, res) => {
             assignedTo ,
             createdBy: req.user._id, 
             attachments, 
-            todoChecklist
+            todoChecklist,
+            tags
         });
+
+        // Enviar notificaciones a usuarios asignados
+        if (assignedTo && assignedTo.length > 0) {
+            const io = req.app.get('io');
+            const { createNotification } = require('./notificationController');
+            
+            for (const userId of assignedTo) {
+                if (userId.toString() !== req.user._id.toString()) {
+                    await createNotification(
+                        userId,
+                        'task_assigned',
+                        'Nueva tarea asignada',
+                        `Se te ha asignado la tarea: ${title}`,
+                        task._id,
+                        req.user._id,
+                        io
+                    );
+                }
+            }
+        }
+
         res.status(201).json({ message: "Task created successfully", task });
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error: error.message });
@@ -216,6 +239,7 @@ const updateTaskStatus = async (req, res) => {
             return res.status(403).json({ message: 'You are not authorized to update this task' });
         }
 
+        const previousStatus = task.status;
         task.status = req.body.status || task.status;
 
         if (task.status === "Completed") {
@@ -224,6 +248,46 @@ const updateTaskStatus = async (req, res) => {
         }
         
         await task.save();
+
+        // Notificar al creador si se completó la tarea
+        const io = req.app.get('io');
+        if (task.status === "Completed" && previousStatus !== "Completed" && task.createdBy) {
+            const { createNotification } = require('./notificationController');
+            
+            // Notificar al creador
+            if (task.createdBy.toString() !== req.user._id.toString()) {
+                await createNotification(
+                    task.createdBy,
+                    'task_completed',
+                    'Tarea completada',
+                    `La tarea "${task.title}" ha sido completada`,
+                    task._id,
+                    req.user._id,
+                    io
+                );
+            }
+
+            // Notificar a todos los asignados
+            for (const userId of task.assignedTo) {
+                if (userId.toString() !== req.user._id.toString()) {
+                    await createNotification(
+                        userId,
+                        'task_completed',
+                        'Tarea completada',
+                        `La tarea "${task.title}" ha sido completada por ${req.user.name || 'un usuario'}`,
+                        task._id,
+                        req.user._id,
+                        io
+                    );
+                }
+            }
+
+            // Emitir evento de actualización a todos los clientes
+            if (io) {
+                io.emit('task_updated', { taskId: task._id, status: 'Completed' });
+            }
+        }
+
         res.json({ message: "Task status updated successfully", task });
 
     } catch (error) {

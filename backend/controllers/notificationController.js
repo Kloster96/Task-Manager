@@ -1,7 +1,7 @@
 const Notification = require('../models/Notification');
 
 // Crear una notificación
-const createNotification = async (userId, type, title, message, taskId = null, fromUserId = null) => {
+const createNotification = async (userId, type, title, message, taskId = null, fromUserId = null, io = null) => {
     try {
         const notification = await Notification.create({
             user: userId,
@@ -11,6 +11,19 @@ const createNotification = async (userId, type, title, message, taskId = null, f
             task: taskId,
             from: fromUserId
         });
+
+        // Send real-time notification if io is available
+        if (io) {
+            const notificationWithPop = await Notification.findById(notification._id)
+                .populate('from', 'name profileImageUrl')
+                .populate('task', 'title');
+            
+            io.to(`user_${userId}`).emit('notification', notificationWithPop);
+            
+            // Also emit to admin room for task assignments
+            io.to('admin').emit('new_notification', notificationWithPop);
+        }
+
         return notification;
     } catch (error) {
         console.error('Error creating notification:', error.message);

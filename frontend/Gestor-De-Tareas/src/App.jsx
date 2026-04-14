@@ -16,6 +16,7 @@ import MyTasks from './pages/Users/MyTasks';
 import UserProvider, { UserContext } from './context/userContext';
 import { ThemeProvider } from './context/themeContext';
 import { NotificationProvider } from './context/notificationContext';
+import { SocketProvider } from './context/socketContext';
 import { Toaster } from 'react-hot-toast';
 
 const AppContent = () => {
@@ -66,17 +67,19 @@ const App = () => {
   return (
     <UserProvider>
       <ThemeProvider>
-        <NotificationProvider>
-          <AppContent />
-          <Toaster
-            toastOptions={{
-              className: "",
-              style: {
-                fontSize: "13px",
-              }
-            }} 
-          />
-        </NotificationProvider>
+        <SocketProvider>
+          <NotificationProvider>
+            <AppContent />
+            <Toaster
+              toastOptions={{
+                className: "",
+                style: {
+                  fontSize: "13px",
+                }
+              }} 
+            />
+          </NotificationProvider>
+        </SocketProvider>
       </ThemeProvider>
     </UserProvider>
   );
